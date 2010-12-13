@@ -1,0 +1,21 @@
+<p><%= error_messages_for 'folder' %></p>
+<table>
+	<tr>
+		<td style="width:300px;" valign=top>
+
+		<label for="folder_name">Name:</label><br />
+		<%= text_field 'folder', 'name'  %><br />
+		<br />
+		<td style="width:400px" valign=top>
+			<% if params[:action] == "edit" || params[:action] == "update" %>
+				<% if get_setting_bool("let_users_move_folders") || @logged_in_user.is_admin? %>
+					<h3>Parent Folder</h3>
+					<% root_folder = Folder.find_by_is_root(true) %>
+					<%= root_folder.print(:make_radio_button => true, :id_to_check => @folder.parent_id, :id_to_exclude => @folder.id, :input_name => "folder[parent_id]")%>
+				<% end %>
+	    <br />
+
+			<% end %>
+		</td>	
+	</tr>
+</table>

@@ -1,0 +1,8 @@
+<p class="title">New folder</p>
+<i>This folder will be created inside <b><%= h @parent_folder.name %></b>.</i>
+<% form_tag :action => 'create', :id => controller.folder_id do %>
+    <%= render :partial =>  'form' %>
+    <%= submit_tag 'Create' %>
+<% end %>
+
+<%= link_to 'Back', :action => 'list', :id => controller.folder_id %>
