@@ -199,13 +199,13 @@ class FolderController < ApplicationController
         # (it should always be able to do everything)
         unless group_permission.blank? or group_permission.group.is_the_administrators_group?
           case field
-          when 'create':
+          when 'create'
             group_permission.can_create = can_do_it
-          when 'read':
+          when 'read'
             group_permission.can_read = can_do_it
-          when 'update':
+          when 'update'
             group_permission.can_update = can_do_it
-          when 'delete':
+          when 'delete'
             group_permission.can_delete = can_do_it
           end
           group_permission.save

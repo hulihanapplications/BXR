@@ -5,18 +5,10 @@
 #Dave: here's how to set your production method
 #Dave: THIS NEEDS TO BE AT THE TOP OF environment.rb or it will break!
 ENV['RAILS_ENV'] ||= 'development'
-#ENV['RAILS_ENV'] ||= 'test'
-#ENV['RAILS_ENV'] ||= 'production'
-
-# Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.8'
-#RAILS_GEM_VERSION = '1.2.6'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 Rails::Initializer.run do |config|
-  config.action_controller.perform_caching = true
-
   # Settings in config/environments/* take precedence those specified here
   
   # Skip frameworks you're not going to use (only works if using vendor/rails)
@@ -68,12 +60,6 @@ end
 # Include your app's configuration here:
 
 #GEM_PATH = "/home/hulihana/.gems"
-
-# Plugins
-# acts_as_ferret is a gem, NOT a plugin
-#require "acts_as_ferret" # Dave: I think this is causing a 500
-#require "acts_as_ferret" # Dave: I think this is causing a 500
-#require "rubyzip" # Dave: I think this is causing a 500
 
 ActionMailer::Base.delivery_method = :smtp
 
