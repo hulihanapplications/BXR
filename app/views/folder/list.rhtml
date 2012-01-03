@@ -45,12 +45,12 @@
             <td><%= folder.date_modified %></td>
 			<td>--</td>
             <td>
-    <% if @logged_in_user.can_update(folder.id) %>
-                <%= link_to image_tag('edit.png'), { :action => 'edit', :id => folder}, { :title => 'Edit this folder' } %>
+    <% if @can_update %>
+                <%= link_to image_tag('edit.png'), { :action => 'rename', :id => folder}, { :title => 'Rename this folder' } %>
     <% end %>
             </td>
             <td>
-    <% if @logged_in_user.can_delete(folder.id) %>
+    <% if @can_delete %>
                 <%= link_to image_tag('delete.png'), {:action => 'destroy', :id => folder}, { :title => 'Delete this folder', :confirm => "All files and subfolders will be deleted!\nAre you sure?" } %>
     <% end %>
             </td>
@@ -74,7 +74,7 @@
 				 <span class="normal_post_tags">
 				  <% counter = 1 %>
 				  <% for tag in myfile.myfile_tags %>
-				    <a class ="tag_link" href="/search/tag/<%= tag.name %>"><%= h tag.name %></a><% if counter != myfile.myfile_tags.size %>,<% end %>
+				    <a class ="tag_link" href="/search/tag/<%= tag.name %>"><%= tag.name %></a><% if counter != myfile.myfile_tags.size %>,<% end %>
 				    <% counter += 1 %>
 				  <% end %>
 				 </span>

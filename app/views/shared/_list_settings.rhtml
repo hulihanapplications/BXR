@@ -13,10 +13,10 @@
   </td>
   <td align=right valign=middle style="width:200px">
    <% if setting.item_type == "string" %> 
-    <input type=text name="setting[<%= h setting.name %>]" value="<%= h setting.value %>" class="setting_item_string" id="setting_<%= setting.id %>" onfocus = "focus_input('setting_<%= setting.id %>')" onblur = "blur_input('setting_<%= setting.id %>')">
+    <input type=text name="setting[<%= setting.name %>]" value="<%= setting.value %>" class="setting_item_string" id="setting_<%= setting.id %>" onfocus = "focus_input('setting_<%= setting.id %>')" onblur = "blur_input('setting_<%= setting.id %>')">
    <% elsif setting.item_type == "bool" %>
-	On<input type="radio" value="1"  name="setting[<%= h setting.name %>]" <% if setting.value == "1"  %>CHECKED<% end %>>
-	&nbsp;Off<input type="radio" value="0"  name="setting[<%= h setting.name %>]" <% if setting.value == "0" %>CHECKED<% end %>>
+	On<input type="radio" value="1"  name="setting[<%= setting.name %>]" <% if setting.value == "1"  %>CHECKED<% end %>>
+	&nbsp;Off<input type="radio" value="0"  name="setting[<%= setting.name %>]" <% if setting.value == "0" %>CHECKED<% end %>>
 	<br><br>
    <% else %> 
     <%= "Unknown setting type: #{setting.item_type}" %> 

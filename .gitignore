@@ -24,11 +24,10 @@ db/*.sqlite3
 !public/themes/vault
 public/themes/*
 
-# Remove Any User-Uploaded Images or Files
-public/images/item_images/*
-public/images/uploaded_images/*
+# Remove Any Uploads/Assets
 public/images/avatars/*
 files/item_files/*
+uploads/*
 
 # Remove any Opal Plugins
 vendor/plugins/opal_*

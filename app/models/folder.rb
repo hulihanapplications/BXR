@@ -19,8 +19,7 @@ class Folder < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => 'parent_id'
   validates_presence_of :name
 
-  # need to include all fields we set in update controller
-  attr_accessible :name, :parent_id, :date_modified
+  attr_accessible :name
 
   # List subfolders
   # for the given user in the given order.
@@ -52,26 +51,23 @@ class Folder < ActiveRecord::Base
 
   def print(options = {})    # recursive print out of folder name and other information 
     # initialize default values for options
-    options[:depth]            ||= 25          # how many levels to descend
-    options[:make_link]        ||= true        # make the folder name a link to the folder page
-    options[:make_radio_button]||= false       # add an <input type="radio"... button 
+    options[:depth]            ||= 25      # how many levels to descend
+    options[:make_link]        ||= true   # make the folder name a link to the folder page
+    options[:make_radio_button]||= false  # add an <input type="radio"... button 
     options[:input_name]       ||= "folder_id" # name of the html input object 
-    options[:id_to_check ]     ||= 0           # if the id to check matches the folder id, select the radio button
-    options[:id_to_exclude]    ||= 0           # don't show the folder with this id    
-    options[:truncate_length]  ||= 30          # Truncate name after this amount of characters
+    options[:id_to_check ]     ||= 0  # if the id to check matches the folder id, select the radio button
+    options[:truncate_length]  ||= 30     # Truncate name after this amount of characters
     
     # Set up formatting 
     html = "<div class=\"folder_indent\">\n"  
-      if options[:id_to_exclude] != self.id
-        html += "<table cellpadding=0 cellspacing=0 style=\"width:100%\"><tr>" 
-          html += "<td style=\"width:100%;\"><a href=\"/folder/list/#{self.id}\" title=\"#{self.name}\"><b>#{truncate(self.name, :length => options[:truncate_length])}</b></a></td>"
-          if options[:id_to_check] == self.id && options[:make_radio_button] # this is the folder we're looking for
-            html += "<td align=right><input type=\"radio\" name=\"#{options[:input_name]}\" value=\"#{self.id}\" CHECKED ></td>"
-          elsif options[:make_radio_button] # not the folder we're looking for
-            html += "<td align=right><input type=\"radio\" name=\"#{options[:input_name]}\" value=\"#{self.id}\"></td>"
-          end
-        html += "</tr></table>\n" 
-      end 
+      html += "<table cellpadding=0 cellspacing=0 style=\"width:100%\"><tr>" 
+        html += "<td style=\"width:100%;\"><a href=\"/folder/list/#{self.id}\" title=\"#{self.name}\"><b>#{truncate(self.name, :length => options[:truncate_length])}</b></a></td>"
+        if options[:id_to_check] == self.id && options[:make_radio_button] # this is the folder we're looking for
+          html += "<td align=right><input type=\"radio\" name=\"#{options[:input_name]}\" value=\"#{self.id}\" CHECKED></td>"
+        elsif options[:make_radio_button] # not the folder we're looking for
+          html += "<td align=right><input type=\"radio\" name=\"#{options[:input_name]}\" value=\"#{self.id}\"></td>"
+        end
+      html += "</tr></table>\n" 
     if options[:depth] > 0 # if we can still descend
       sub_folders = Folder.find(:all, :conditions => ["parent_id = ?", self.id], :order => "name ASC")    
       for sub_folder in sub_folders # for each of the children...

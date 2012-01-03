@@ -9,7 +9,7 @@ ENV['RAILS_ENV'] ||= 'development'
 #ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.2'
+RAILS_GEM_VERSION = '2.3.8'
 #RAILS_GEM_VERSION = '1.2.6'
 
 # Bootstrap the Rails environment, frameworks, and default configuration
@@ -28,17 +28,6 @@ Rails::Initializer.run do |config|
   # Force all environments to use the same logger level 
   # (by default production uses :info, the others :debug)
   # config.log_level = :debug
-
- 
- # Your secret key for verifying cookie session data integrity.
-  # If you change this key, all old sessions will become invalid!
-  # Make sure the secret is at least 30 characters and all random, 
-  # no regular words or you'll be exposed to dictionary attacks.  
-  config.action_controller.session = {
-    :session_key => '_bxr_session',
-    :secret      => 'c23z4011c1d97afd51276a7zsa27bc4445fd3677768271593089d212e26630224xx1953da3cggaf0622cf81ef1dz1b5438efb9f399a30ecafa8ac340ab84e3'
-  }
-  
 
   # Use the database for sessions instead of the file system
   # (create the session table with 'rake db:sessions:create')

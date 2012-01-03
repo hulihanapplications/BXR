@@ -5,7 +5,7 @@
 # [#feed_warning]       renders page with explanations/warnings about RSS feed
 # [#new]                shows the form for creating a new folder
 # [#create]             create a new folder
-# [#edit]               show the form for adjusting the folder's name
+# [#rename]             show the form for adjusting the folder's name
 # [#update]             updates the attributes of a folder
 # [#destroy]            delete a folder
 # [#update_permissions] save the new rights given by the user
@@ -15,7 +15,7 @@ class FolderController < ApplicationController
   before_filter :does_folder_exist, :except => [:list, :feed, :feed_warning]
   before_filter :authorize_creating, :only => [:new, :create]
   before_filter :authorize_reading, :only => :list
-  before_filter :authorize_updating, :only => [:edit, :update, :update_rights]
+  before_filter :authorize_updating, :only => [:rename, :update, :update_rights]
   before_filter :authorize_deleting, :only => :destroy
 
   # Sessions are not needed for feeds
@@ -41,34 +41,23 @@ class FolderController < ApplicationController
     @can_update = @logged_in_user.can_update(@folder.id)
     @can_delete = @logged_in_user.can_delete(@folder.id)
 
-    # determine how to order files/folders
-   
-    params[:order] == "DESC" ? order_direction = "DESC" : order_direction = "ASC"
-    
-    # create hash to hold valid columns to sort. The column to sort(passed in by params[:order_by]) must match one of the assigned key/value pairs, otherwise it will reference an unset Hash item(eg: folders_order_hash[:someunknown_column]), which returns nil and prevents SQL Injection.      
-    params[:order_by] ||= "name"
-    folders_order_hash = Hash.new 
-    folders_order_hash[:filename] = "name"
-    folders_order_hash[:name] = "name"
-    folders_order_hash[:filesize] = "name"
-    folders_order_hash[:date_modified] = "date_modified"
-    
-    folders_order_by = folders_order_hash[params[:order_by].to_sym] # get valid column value to order by
-    
-    # List of subfolders
-    @folders = @folder.list_subfolders(@logged_in_user, folders_order_by + " #{order_direction}")
+    # determine the order in which files are shown
+    file_order = 'filename '
+    file_order = params[:order_by].sub('name', 'filename') + ' ' if params[:order_by]
+    file_order += params[:order] if params[:order]
 
-    # create hash to hold valid columns to sort. The column to sort(passed in by params[:order_by]) must match one of the assigned key/value pairs, otherwise it will reference an unset Hash item(eg: files_order_hash[:someunknown_column]), which returns nil and prevents SQL Injection.      
-    files_order_hash = Hash.new 
-    files_order_hash[:filename] = "filename"
-    files_order_hash[:name] = "filename"
-    files_order_hash[:filesize] = "filesize"
-    files_order_hash[:date_modified] = "date_modified"
-    
-    files_order_by = files_order_hash[params[:order_by].to_sym] # get valid column value to order by
-    
+    # determine the order in which folders are shown
+    folder_order = 'name '
+    if params[:order_by] and params[:order_by] != 'filesize'    
+      folder_order = params[:order_by] + ' '
+      folder_order += params[:order] if params[:order]
+    end
+
+    # List of subfolders
+    @folders = @folder.list_subfolders(@logged_in_user, folder_order.rstrip)
+
     # List of files in the folder
-    @myfiles = @folder.list_files(@logged_in_user, files_order_by + " #{order_direction}")
+    @myfiles = @folder.list_files(@logged_in_user, file_order.rstrip)
 
     #get the correct URL
     url = url_for(:controller => 'folder', :action => 'list', :id => nil)
@@ -116,7 +105,6 @@ class FolderController < ApplicationController
   # The new folder will be stored in the 'current' folder.
   def new
     @folder = Folder.new
-    @parent_folder = Folder.find(params[:id])
   end
 
   # Create a new folder with the posted variables from the 'new' view.
@@ -156,20 +144,17 @@ class FolderController < ApplicationController
 
 
   # Show a form with the current name of the folder in a text field.
-  def edit
+  def rename
     render
   end
 
   # Update the folder attributes with the posted variables from the 'rename' view.
   def update
     if request.post?
-      # cache Time.now here so we can update in one fell swoop
-      params[:folder][:date_modified] = Time.now
-      if @folder.update_attributes(params[:folder])
-        flash[:notice] = "<div class=\"flash_success\"><b>#{@folder.name}</b> has been updated successfully.</div>"        
+      if @folder.update_attributes(:name => params[:folder][:name], :date_modified => Time.now)
         redirect_to :action => 'list', :id => folder_id
       else
-        render :action => 'edit'
+        render_action 'rename'
       end
     end
   end

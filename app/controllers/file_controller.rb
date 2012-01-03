@@ -22,6 +22,8 @@ class FileController < ApplicationController
   #session :off, :only => [:progress]
 
 
+
+
   # The requested file will be downloaded to the user's system.
   # Which user downloaded which file at what time will be logged.
   # (adapted from http://wiki.rubyonrails.com/rails/pages/HowtoUploadFiles)
@@ -55,10 +57,11 @@ class FileController < ApplicationController
 
 
 
+
   def do_the_upload # now with multiple file upload 
     counter = 0
-    while(params["file_#{counter}".to_s] != "" && params["file_#{counter}".to_s]) # the first file is params[:file_0]
-      @myfile = Myfile.new()
+    while(params["file_#{counter}".to_s] != "") # the first file is params[:file_0]
+	    @myfile = Myfile.new()
 	    @myfile.myfile = params["file_#{counter}".to_s] # Myfile.myfile contains the actual data
 	    @myfile.folder_id = folder_id
 	    @myfile.date_modified = Time.now
@@ -82,8 +85,8 @@ class FileController < ApplicationController
       
 	    else
 	      #render :template =>'file/upload_without_progress' unless USE_UPLOAD_PROGRESS
-	    end 
-      counter += 1 # move to next file  
+	    end
+      counter += 1 # move to next file	 
    end # end file loop
 
    redirect_to :controller => 'folder', :action => 'list', :id => folder_id
